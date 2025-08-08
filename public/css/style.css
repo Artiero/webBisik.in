@@ -1,0 +1,175 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa, #e0eafc);
+  color: #333;
+  line-height: 1.6;
+  padding: 0;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+/* Main Container */
+main {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+/* Section Titles */
+section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #0077b6;
+}
+
+/* Form */
+.submit-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.submit-form textarea {
+  resize: vertical;
+  min-height: 100px;
+  border: 2px solid #caf0f8;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 1rem;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease;
+}
+
+.submit-form textarea:focus {
+  border-color: #0077b6;
+  outline: none;
+}
+
+.submit-form button {
+  align-self: flex-start;
+  padding: 10px 25px;
+  background-color: #0077b6;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-form button:hover {
+  background-color: #023e8a;
+}
+
+/* Problems List (Feed Page) */
+.problem-list {
+  margin-top: 30px;
+}
+
+.problem-list .problem {
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.problem:hover {
+  transform: translateY(-3px);
+}
+
+.problem p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.actions span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Back Button (for feed.html) */
+.back-button {
+  display: inline-block;
+  margin-top: 30px;
+  background-color: #00b4d8;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #0077b6;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #caf0f8;
+  color: #333;
+  font-size: 0.9rem;
+  margin-top: 40px;
+  border-top: 1px solid #90e0ef;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  section h2 {
+    font-size: 1.5rem;
+  }
+
+  .submit-form button {
+    width: 100%;
+  }
+}
