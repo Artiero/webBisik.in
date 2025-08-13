@@ -1,8 +1,23 @@
 <?php
 require '../backend/global.php';
 require '../backend/function/function_problem.php';
-// var_dump($_SESSION['user_token']);
 $users = queryData("SELECT * FROM tbl_problems");
+
+$reactions_data = [];
+foreach ($users as $user) {
+    $res = mysqli_query($conn, "
+        SELECT emoji, COUNT(*) as total 
+        FROM tbl_reactions 
+        WHERE problem_id = {$user['id']} 
+        GROUP BY emoji
+    ");
+    $temp = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        $temp[$row['emoji']] = $row['total'];
+    }
+    $reactions_data[$user['id']] = $temp;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -27,18 +42,31 @@ $users = queryData("SELECT * FROM tbl_problems");
             <h2>📝 Masalah Terbaru</h2>
             <?php foreach ($users as $user) :
             ?>
-                <?php $comments = getComments($user['id']); ?>
+                <?php $comments = getComments($user['id']);
+                ?>
+
 
                 <div class="problem">
                     <p><strong><?= $user['content'] ?></strong></p>
                     <span>📅 <?= date('d M Y H:i:s', strtotime($user['created_at'])) ?></span>
 
-                    <div class="actions" data-post-id="123">
-                        <span class="react" data-type="like">👍 <span class="count">10</span></span>
-                        <span class="react" data-type="love">❤️ <span class="count">5</span></span>
-                        <span class="react" data-type="laugh">😂 <span class="count">2</span></span>
-                        <span class="react" data-type="sad">😢 <span class="count">1</span></span>
-                        <span class="react" data-type="angry">😡 <span class="count">3</span></span>
+                    <div class="actions" data-post-id="<?= $user['id'] ?>">
+                        <span class="react" data-emoji="like">
+                            👍 <span class="count"><?= $reactions_data[$user['id']]['like'] ?? 0 ?></span>
+                        </span>
+                        <span class="react" data-emoji="love">
+                            ❤️ <span class="count"><?= $reactions_data[$user['id']]['love'] ?? 0 ?></span>
+                        </span>
+                        <span class="react" data-emoji="laugh">
+                            😂 <span class="count"><?= $reactions_data[$user['id']]['laugh'] ?? 0 ?></span>
+                        </span>
+                        <span class="react" data-emoji="sad">
+                            😢 <span class="count"><?= $reactions_data[$user['id']]['sad'] ?? 0 ?></span>
+                        </span>
+                        <span class="react" data-emoji="angry">
+                            😠 <span class="count"><?= $reactions_data[$user['id']]['angry'] ?? 0 ?></span>
+                        </span>
+
 
                         <!-- Komentar trigger -->
                         <span class="toggle-comments" style="cursor: pointer;" data-target="comments-<?= $user['id'] ?>">
@@ -151,38 +179,38 @@ $users = queryData("SELECT * FROM tbl_problems");
             if (!empty($comment)) {
                 if (addComment($problem_id, $comment, $session_id)) {
                     echo '
-            <script type="text/javascript">
-                Swal.fire({
-                    title: "Comment Added!",
-                    text: "Your comment has been successfully posted.",
-                    icon: "success"
-                }).then(function(){
-                    window.location.replace("feed.php");
-                });
-            </script>';
+                    <script type="text/javascript">
+                        Swal.fire({
+                        title: "Comment Added!",
+                        text: "Your comment has been successfully posted.",
+                        icon: "success"
+                    }).then(function(){
+                        window.location.replace("feed.php");
+                    });
+                </script>';
                 } else {
                     echo '
-            <script type="text/javascript">
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Failed to add comment. Please try again."
-                }).then(function(){
-                    window.location.replace("feed.php");
-                });
-            </script>';
+                <script type="text/javascript">
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Failed to add comment. Please try again."
+                    }).then(function(){
+                        window.location.replace("feed.php");
+                    });
+                </script>';
                 }
             } else {
                 echo '
-        <script type="text/javascript">
-            Swal.fire({
-                icon: "warning",
-                title: "Empty Comment",
-                text: "Please write something before posting."
-            }).then(function(){
-                window.location.replace("feed.php");
-            });
-        </script>';
+            <script type="text/javascript">
+                Swal.fire({
+                    icon: "warning",
+                    title: "Empty Comment",
+                    text: "Please write something before posting."
+                }).then(function(){
+                    window.location.replace("feed.php");
+                });
+            </script>';
             }
         }
     }
