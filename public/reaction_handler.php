@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 error_reporting(0);
 
 // Load koneksi & fungsi global
-require_once __DIR__ . '/../backend/global.php'; 
+require '../backend/global.php';
 
 // Jika koneksi gagal
 if (!$conn) {
@@ -45,7 +45,8 @@ if ($result->num_rows > 0) {
     $insert->execute();
 }
 
-// Hitung ulang jumlah reaction
+// Hitung jumlah reaction per emoji
+$counts = [];
 $count_query = $conn->prepare("SELECT emoji, COUNT(*) as total 
                                 FROM tbl_reactions 
                                 WHERE problem_id = ? 
@@ -54,14 +55,22 @@ $count_query->bind_param("i", $problem_id);
 $count_query->execute();
 $count_result = $count_query->get_result();
 
-$counts = [];
 while ($row = $count_result->fetch_assoc()) {
     $counts[$row['emoji']] = (int) $row['total'];
 }
 
+// Hitung total semua reaction
+$total_all_query = $conn->prepare("SELECT COUNT(*) as total_all FROM tbl_reactions WHERE problem_id = ?");
+$total_all_query->bind_param("i", $problem_id);
+$total_all_query->execute();
+$total_all_result = $total_all_query->get_result();
+$total_all_row = $total_all_result->fetch_assoc();
+$total_all = (int) $total_all_row['total_all'];
+
 // Balikkan hasil
 echo json_encode([
     'success' => true,
-    'counts' => $counts
+    'counts' => $counts,
+    'total_all' => $total_all
 ]);
 exit;

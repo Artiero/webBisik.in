@@ -1,7 +1,7 @@
 <?php
 require '../backend/global.php';
 require '../backend/function/function_problem.php';
-$users = queryData("SELECT * FROM tbl_problems");
+$users = queryData("SELECT * FROM tbl_problems ORDER BY created_at DESC");
 
 $reactions_data = [];
 foreach ($users as $user) {
@@ -12,12 +12,14 @@ foreach ($users as $user) {
         GROUP BY emoji
     ");
     $temp = [];
+    $total_all = 0; // hitung semua reaction
     while ($row = mysqli_fetch_assoc($res)) {
         $temp[$row['emoji']] = $row['total'];
+        $total_all += $row['total']; // akumulasi
     }
+    $temp['total_all'] = $total_all; // simpan total semua reaction
     $reactions_data[$user['id']] = $temp;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,7 @@ foreach ($users as $user) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Problemownia Feed</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -48,41 +50,49 @@ foreach ($users as $user) {
 
                 <div class="problem">
                     <p><strong><?= $user['content'] ?></strong></p>
-                    <span>📅 <?= date('d M Y H:i:s', strtotime($user['created_at'])) ?></span>
+                    <span style="font-size: 12px;">📅 <?= date('d M Y H:i:s', strtotime($user['created_at'])) ?></span>
 
-                    <div class="actions" data-post-id="<?= $user['id'] ?>">
-                        <span class="react" data-emoji="like">
-                            👍 <span class="count"><?= $reactions_data[$user['id']]['like'] ?? 0 ?></span>
-                        </span>
-                        <span class="react" data-emoji="love">
-                            ❤️ <span class="count"><?= $reactions_data[$user['id']]['love'] ?? 0 ?></span>
-                        </span>
-                        <span class="react" data-emoji="laugh">
-                            😂 <span class="count"><?= $reactions_data[$user['id']]['laugh'] ?? 0 ?></span>
-                        </span>
-                        <span class="react" data-emoji="sad">
-                            😢 <span class="count"><?= $reactions_data[$user['id']]['sad'] ?? 0 ?></span>
-                        </span>
-                        <span class="react" data-emoji="angry">
-                            😠 <span class="count"><?= $reactions_data[$user['id']]['angry'] ?? 0 ?></span>
-                        </span>
+                    <div class="actions reactions" data-post-id="<?= $user['id'] ?>">
+                        <div class="reaction-trigger">
+                            <span class="react reaction-item main-like" data-emoji="like">
+                                👍❤️😂😢😠 <span class="count-total">
+                                    <?= $reactions_data[$user['id']]['total_all'] ?? 0 ?>
+                                </span>
+                            </span>
 
+                            <!-- Popup emoji -->
+                            <div class="reaction-popup">
+                                <span class="react reaction-choice" data-emoji="like">
+                                    👍 <span class="count"><?= $reactions_data[$user['id']]['like'] ?? 0 ?></span>
+                                </span>
+                                <span class="react reaction-choice" data-emoji="love">
+                                    ❤️ <span class="count"><?= $reactions_data[$user['id']]['love'] ?? 0 ?></span>
+                                </span>
+                                <span class="react reaction-choice" data-emoji="laugh">
+                                    😂 <span class="count"><?= $reactions_data[$user['id']]['laugh'] ?? 0 ?></span>
+                                </span>
+                                <span class="react reaction-choice" data-emoji="sad">
+                                    😢 <span class="count"><?= $reactions_data[$user['id']]['sad'] ?? 0 ?></span>
+                                </span>
+                                <span class="react reaction-choice" data-emoji="angry">
+                                    😠 <span class="count"><?= $reactions_data[$user['id']]['angry'] ?? 0 ?></span>
+                                </span>
+                            </div>
+                        </div>
 
-                        <!-- Komentar trigger -->
+                        <!-- Sisa tombol -->
                         <span class="toggle-comments" style="cursor: pointer;" data-target="comments-<?= $user['id'] ?>">
                             💬 <?= count($comments) ?> komentar
                         </span>
 
                         <?php if ($_SESSION['user_token'] === $user['user_token']): ?>
-                            <form method="POST" style="display:inline;">
+                            <form method="POST" class="delete-form">
                                 <input type="hidden" name="id" value="<?= $user['id'] ?>">
-                                <button type="submit" name="delete"
-                                    style="background-color: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">
-                                    Delete
-                                </button>
+                                <button type="submit" name="delete" class="delete-btn">Delete</button>
                             </form>
                         <?php endif; ?>
                     </div>
+
 
                     <!-- Komentar wrapper yang bisa ditampilkan/sembunyikan -->
                     <div class="comments" id="comments-<?= $user['id'] ?>" style="display: none; margin-top: 10px;">
@@ -116,8 +126,8 @@ foreach ($users as $user) {
             <?php
             endforeach;
             ?>
-
         </section>
+
         <div style="text-align: center; margin-top: 30px;">
             <a href="index.php">
                 <button
