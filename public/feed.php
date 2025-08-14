@@ -28,20 +28,20 @@ foreach ($users as $user) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Problemownia Feed</title>
+    <title>Bisik.In</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
     <header>
-        <h1>Problemownia</h1>
-        <p>Lihat dan dukung masalah dari orang lain secara anonim</p>
+        <h1>🧠 Bisik.In</h1>
+        <p>Ruang ekspresi anonim, kamu bebas meluapkan perasaan tanpa takut dihakimi.</p>
     </header>
 
     <main>
         <section class="problem-list">
-            <h2>📝 Masalah Terbaru</h2>
+            <h2>📝 Cerita Tanpa Nama</h2>
             <?php foreach ($users as $user) :
             ?>
                 <?php $comments = getComments($user['id']);
@@ -132,7 +132,7 @@ foreach ($users as $user) {
             <a href="index.php">
                 <button
                     style="padding: 10px 20px; border: none; background-color: #0077b6; color: white; border-radius: 8px; cursor: pointer;">Kirim
-                    Masalah Baru</button>
+                    Cerita Baru</button>
             </a>
         </div>
     </main>

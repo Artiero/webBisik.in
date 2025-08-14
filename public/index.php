@@ -17,21 +17,21 @@ $users = queryData("SELECT * FROM tbl_problems ORDER BY RAND() LIMIT 3");
 
 <body>
     <header>
-        <h1>🧠 Problemownia</h1>
-        <p>Bagikan masalahmu secara anonim. Dapatkan dukungan tanpa penghakiman.</p>
+        <h1>🧠 Bisik.In</h1>
+        <p>Ruang ekspresi anonim, kamu bebas meluapkan perasaan tanpa takut dihakimi.</p>
     </header>
 
     <main>
         <!-- Form Kirim Masalah -->
         <section class="submit-form">
-            <h2>📝 Kirim Masalah</h2>
+            <h2>📝 Tulis yang Tersimpan</h2>
             <form action="" method="post">
                 <textarea name="content" placeholder="Tulis masalahmu di sini..." required></textarea>
                 <button type="submit" name="kirim">Kirim</button>
             </form>
         </section>
         <section class="problem-list">
-            <h2>📝 Masalah Terbaru</h2>
+            <h2>📝 Cerita Tanpa Nama</h2>
             <?php foreach ($users as $user) :
             ?>
                 <?php $comments = getComments($user['id']);
@@ -105,7 +105,7 @@ $users = queryData("SELECT * FROM tbl_problems ORDER BY RAND() LIMIT 3");
             ?>
         </section>
         <section style="margin-top: 40px; text-align: center;">
-            <a href="feed.php" class="back-button">Lihat Semua Masalah 🔍</a>
+            <a href="feed.php" class="back-button">Lihat Semua Cerita 🔍</a>
         </section>
     </main>
 
